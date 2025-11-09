@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, tools
+from odoo import models, fields, tools, api
+from odoo.exceptions import UserError
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class ActivityReport(models.Model):
@@ -76,7 +80,9 @@ class ActivityReport(models.Model):
 
         # Check if the model exists and the record exists
         if self.res_model not in self.env:
-            raise UserError(f"Model '{self.res_model}' is not available in the system.")
+            raise UserError(
+                "Model '%s' is not available in the system." % self.res_model
+            )
 
         # Get the target record
         target_model = self.env[self.res_model]
