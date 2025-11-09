@@ -1,0 +1,14 @@
+<odoo>
+    <menuitem 
+        id="menu_activity_report_root" 
+        name="Activity Reports" 
+        sequence="90"
+        groups="base.group_user"/>
+        
+    <menuitem 
+        id="menu_activity_report_all" 
+        name="All Activities" 
+        parent="menu_activity_report_root" 
+        action="action_activity_report"
+        sequence="10"/>
+</odoo>

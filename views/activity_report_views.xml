@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ===================== -->
+    <!-- Tree View -->
+    <!-- ===================== -->
+    <record id="view_activity_report_tree" model="ir.ui.view">
+        <field name="name">activity.report.tree</field>
+        <field name="model">activity.report</field>
+        <field name="arch" type="xml">
+            <tree string="Activity Report" create="false" edit="false"
+                  decoration-success="state == 'done'"
+                  default_order="date_deadline desc">
+                <field name="state" widget="badge"
+                       options="{'classes': {'planned': 'warning', 'done': 'success'}}"/>
+                <field name="user_id"/>
+                <field name="activity_type_id"/>
+                <field name="res_model" string="Related Model"/>
+                <field name="res_id" string="Record ID"/>
+                <field name="summary"/>
+                <field name="date_deadline"/>
+                <field name="done_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ===================== -->
+    <!-- Form View -->
+    <!-- ===================== -->
+    <record id="view_activity_report_form" model="ir.ui.view">
+        <field name="name">activity.report.form</field>
+        <field name="model">activity.report</field>
+        <field name="arch" type="xml">
+            <form string="Activity Details" create="false" edit="false">
+                <sheet>
+                    <group>
+                        <group string="Basic Information">
+                            <field name="state" widget="badge"
+                                   options="{'classes': {'planned': 'warning', 'done': 'success'}}"/>
+                            <field name="user_id"/>
+                            <field name="activity_type_id"/>
+                            <field name="date_deadline"/>
+                            <field name="done_date" attrs="{'invisible': [('state', '=', 'planned')]}"/>
+                        </group>
+                        <group string="Related Record">
+                            <field name="res_model"/>
+                            <field name="res_id"/>
+                            <button name="action_open_related_record" type="object"
+                                    string="Open Related Record" class="btn-primary"
+                                    attrs="{'invisible': [('res_id', '=', False)]}"/>
+                        </group>
+                    </group>
+                    <group string="Details">
+                        <field name="summary" placeholder="Activity summary..."/>
+                        <field name="note" nolabel="1" placeholder="Additional notes..." style="height: 150px;"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ===================== -->
+    <!-- Search View -->
+    <!-- ===================== -->
+    <record id="view_activity_report_search" model="ir.ui.view">
+        <field name="name">activity.report.search</field>
+        <field name="model">activity.report</field>
+        <field name="arch" type="xml">
+            <search string="Activity Report">
+                <field name="user_id" string="Assigned To"/>
+                <field name="res_model" string="Model"/>
+                <field name="activity_type_id" string="Type"/>
+                <field name="summary" string="Summary"/>
+                <field name="state" string="Status"/>
+
+                <filter string="My Activities" name="my_activities" domain="[('user_id','=',uid)]"/>
+                <filter string="📋 Planned" name="filter_planned" domain="[('state','=','planned')]"/>
+                <filter string="✅ Done" name="filter_done" domain="[('state','=','done')]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ===================== -->
+    <!-- Window Action -->
+    <!-- ===================== -->
+    <record id="action_activity_report" model="ir.actions.act_window">
+        <field name="name">Activity Report</field>
+        <field name="res_model">activity.report</field>
+        <field name="view_mode">tree,form,pivot,graph,kanban</field>
+        <field name="search_view_id" ref="view_activity_report_search"/>
+        <field name="context">{'search_default_filter_planned': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No activity data found!</p>
+            <p>Track all planned and completed activities across your organization.</p>
+        </field>
+    </record>
+
+    <!-- ===================== -->
+    <!-- Pivot View -->
+    <!-- ===================== -->
+    <record id="view_activity_report_pivot" model="ir.ui.view">
+        <field name="name">activity.report.pivot</field>
+        <field name="model">activity.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Activity Analysis">
+                <field name="state" type="col"/>
+                <field name="user_id" type="row"/>
+                <field name="activity_type_id" type="row"/>
+                <field name="res_model" type="row"/>
+                <field name="date_deadline" interval="month" type="col"/>
+                <field name="done_date" interval="month" type="col"/>
+                <field name="id" type="measure" string="Count"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ===================== -->
+    <!-- Graph View -->
+    <!-- ===================== -->
+    <record id="view_activity_report_graph" model="ir.ui.view">
+        <field name="name">activity.report.graph</field>
+        <field name="model">activity.report</field>
+        <field name="arch" type="xml">
+            <graph string="Activity Overview" type="bar" stacked="1">
+                <field name="state" type="col"/>
+                <field name="user_id" type="row"/>
+                <field name="activity_type_id" type="row"/>
+                <field name="id" type="measure" string="Activities"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- ===================== -->
+    <!-- Kanban View -->
+    <!-- ===================== -->
+    <record id="view_activity_report_kanban" model="ir.ui.view">
+        <field name="name">activity.report.kanban</field>
+        <field name="model">activity.report</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="state"/>
+                <field name="user_id"/>
+                <field name="activity_type_id"/>
+                <field name="summary"/>
+                <field name="date_deadline"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                            <div>
+                                <strong><field name="activity_type_id"/></strong><br/>
+                                <field name="summary"/>
+                            </div>
+                            <div class="mt8">
+                                <span><field name="user_id"/></span> — 
+                                <span><field name="date_deadline"/></span>
+                            </div>
+                            <div class="text-right mt8">
+                                <field name="state" widget="badge"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>
