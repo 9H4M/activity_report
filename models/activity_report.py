@@ -52,7 +52,7 @@ class ActivityReport(models.Model):
                 -- 2) Done activities from mail_message (activity completions)
                 SELECT
                     (m.id + 100000000) AS id,
-                    COALESCE(m.author_id, m.create_uid) AS user_id,
+                    COALESCE(m.create_uid, m.author_id) AS user_id,
                     m.model AS res_model,
                     m.res_id AS res_id,
                     m.mail_activity_type_id AS activity_type_id,
