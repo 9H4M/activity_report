@@ -51,7 +51,7 @@
                     </group>
                     <group string="Details">
                         <field name="summary" placeholder="Activity summary..."/>
-                        <field name="note" nolabel="1" placeholder="Additional notes..." style="height: 150px;"/>
+                        <field name="note" nolabel="1" widget="html" placeholder="Additional notes..." style="height: 150px;"/>
                     </group>
                 </sheet>
             </form>
