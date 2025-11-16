@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Create custom group for Activity Report - ONLY this group has access -->
+    <record id="group_activity_report" model="res.groups">
+        <field name="name">Activity Report Access</field>
+        <field name="category_id" ref="base.module_category_reporting"/>
+        <field name="users" eval="[(6, 0, [])]"/>
+    </record>
+</odoo>

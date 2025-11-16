@@ -9,6 +9,7 @@
     "category": "Reporting",
     "depends": ["base", "mail"],
     "data": [
+        "security/activity_report_security.xml",
         "security/ir.model.access.csv",
         "views/activity_report_views.xml",
         "views/menu.xml",
